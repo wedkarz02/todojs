@@ -19,9 +19,23 @@ a {
     background-color: #2c2c2c;
 } */
 
+input {
+    background-color: #5c5c5c;
+    color: #f1f1f1;
+}
+
 button {
-    padding: 5px;
+    padding: 10px;
     margin: 5px;
+    background-color: #5c5c5c;
+    color: #f1f1f1;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #4c4c4c;
 }
 
 .todo-body {
