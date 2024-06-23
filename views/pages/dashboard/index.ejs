@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../../partials/head"); %>
+</head>
+<body>
+    <h1>Logged in as <%= userName %></h1>
+    <a href="/dashboard/add">Add TODO</a>
+
+    <form action="/dashboard/search" method="POST">
+        <input type="text" name="searchTerm">
+        <button type="submit">Search</button>
+    </form>
+
+    <% if (todos.length > 0) { %>
+        <% todos.forEach(todo => { %>
+            <a href="/dashboard/item/<%= todo._id %>">
+                <h5><%= todo.title %></h5>
+                <p><%= todo.body %></p>
+            </a>
+        <% }); %>
+    <% } else { %>
+        <h4>No TODOs yet</h4>
+        <a href="/dashboard/add">Add TODO</a>
+    <% } %>
+
+    <% if (todos.length > 0) { %>
+        <ul>
+            <% if (current == 1) { %>
+                <li><a href="#">Previous</a></li>
+            <% } else { %>
+                <li><a href="/dashboard">First</a></li>
+            <% } %>
+
+            <% let i = (Number(current) > 5 ? Number(current) - 4 : 1) %>
+            <% if (i !== 1) { %>
+                <li><a href="#">...</a></li>
+            <% } %>
+            <% while (i <= (Number(current) + 4) && i <= pages) { %>
+                <% if (i === current) { %>
+                    <li><a href="#"><%= i %></a></li>
+                <% } else { %>
+                    <li><a href="/dashboard/?page=<%= i %>"><%= i %></a></li>
+                <% } %>
+                <% if (i === Number(current) + 4 && i < pages) { %>
+                    <li><a href="#">...</a></li>
+                <% } %>
+                <% i += 1 %>
+            <% } %>
+            <% if (pages === current) { %>
+                <li><a href="#">Last</a></li>
+            <% } else { %>
+                <li><a href="/dashboard/?page=<%= pages %>">Last</a></li>
+            <% } %>
+        </ul>
+    <% } %>
+
+    <%- include("../../partials/footer") %>
+</body>
+</html>

@@ -1,0 +1,29 @@
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "arial";
+}
+
+body {
+    background-color: #3c3c3c;
+    color: #f1f1f1
+}
+
+a {
+    padding: 5px;
+    margin: 5px;
+    color: #f1f1f1;
+}
+
+/* a:hover {
+    background-color: #2c2c2c;
+} */
+
+button {
+    padding: 5px;
+    margin: 5px;
+}
+
+.todo-body {
+    word-wrap: break-word;
+}

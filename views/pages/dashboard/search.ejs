@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include("../../partials/head"); %>
+</head>
+<body>
+    <a href="/dashboard">Dashboard</a>
+    <% if (results != "") { %>
+        <% results.forEach((todo, idx) => { %>
+            <a href="/dashboard/item/<%= todo._id %>"><h4><%= todo.title %></h4></a>
+        <% }) %>
+    <% } else { %>
+        <p>No TODOs found</p>
+    <% } %>
+
+    <%- include("../../partials/footer") %>
+</body>
+</html>
