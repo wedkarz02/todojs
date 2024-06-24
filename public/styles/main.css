@@ -18,6 +18,14 @@ a {
 input {
     background-color: #5c5c5c;
     color: #f1f1f1;
+    padding: 5px;
+}
+
+textarea {
+    background-color: #5c5c5c;
+    color: #f1f1f1;
+    width: 300px;
+    height: 200px;
 }
 
 button {
@@ -36,4 +44,15 @@ button:hover {
 
 .todo-body {
     word-wrap: break-word;
+}
+
+.inactive {
+    pointer-events: none;;
+    cursor: default;
+    color: #919191;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
 }

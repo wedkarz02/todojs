@@ -5,19 +5,26 @@
 </head>
 <body>
     <h1>View TODO</h1>
-    <ol>
-        <li><a href="/dashboard">Dashboard</a></li>
-        <li><%= todo.title %></li>
-        <li class="todo-body"><%= todo.body %></li>
-    </ol>
+    <a href="/dashboard">Dashboard</a></li>
+    <p>Title:</p>
+    <p><%= todo.title %></p>
+    <p>Body:</p>
+    <p class="todo-body"><%= todo.body %></p>
+
     <form action="/dashboard/item-delete/<%= todoId %>?_method=DELETE" method="POST">
         <button type="submit">Delete</button>
     </form>
 
     <form action="/dashboard/item/<%= todoId %>?_method=PUT" method="POST">
-        <input type="text" name="title" id="title" value="<%= todo.title %>" placeholder="Title">
-        <textarea name="body" id="body" placeholder="Write something..." rows="12"><%= todo.body %></textarea>
-        <button type="submit">Update</button>
+        <div>
+            <input type="text" name="title" id="title" value="<%= todo.title %>" placeholder="Title">
+        </div>
+        <div>
+            <textarea name="body" id="body" placeholder="Write something..." rows="12"><%= todo.body %></textarea>
+        </div>
+        <div>
+            <button type="submit">Update</button>
+        </div>
     </form>
 
     <%- include("../../partials/footer") %>

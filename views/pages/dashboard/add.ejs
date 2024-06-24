@@ -10,8 +10,14 @@
     </ol>
     <h1>Add TODO</h1>
     <form action="/dashboard/add" method="POST">
-        <input type="text" name="title" placeholder="Title" required>
-        <textarea name="body" id="body" placeholder="Write something..." required></textarea>
+        <div>
+            <p>Title:</p>
+            <input type="text" name="title" required>
+        </div>
+        <div>
+            <p>Body:</p>
+            <textarea size="50" name="body" id="body" required></textarea>
+        </div>
         <button type="submit">Add</button>
     </form>
 

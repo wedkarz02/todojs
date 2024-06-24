@@ -15,7 +15,7 @@ const isLoggedIn = (req, res, next) => {
 };
 
 router.get("/", isLoggedIn, async (req, res) => {
-    let perPage = 10;
+    let perPage = 8;
     let page = req.query.page || 1;
 
     try {

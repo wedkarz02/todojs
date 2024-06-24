@@ -40,7 +40,7 @@ app.use(
         secret: SESSION_SECRET,
         resave: false,
         saveUninitialized: false,
-        cookie: { maxAge: 600000 },
+        cookie: { maxAge: 6000000 },
         store: mongoStore.create({
             mongoUrl: DB_URI,
         }),
