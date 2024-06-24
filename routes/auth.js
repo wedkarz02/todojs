@@ -68,7 +68,9 @@ router.get(
 );
 
 router.get("/login-failure", (_req, res) => {
-    res.render(path.join("pages", "error"), { error: "Failed to log in" });
+    res.status(500).render(path.join("pages", "error"), {
+        error: "Failed to log in",
+    });
 });
 
 router.get("/logout", (req, res) => {
