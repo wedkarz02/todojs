@@ -44,6 +44,7 @@ button:hover {
 
 .todo-body {
     word-wrap: break-word;
+    text-decoration: none;
 }
 
 .inactive {

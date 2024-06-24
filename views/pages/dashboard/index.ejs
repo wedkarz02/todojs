@@ -14,8 +14,8 @@
 
     <% if (todos.length > 0) { %>
         <% todos.forEach(todo => { %>
-            <a href="/dashboard/item/<%= todo._id %>">
-                <h5><%= todo.title %></h5>
+            <a class="todo-body" href="/dashboard/item/<%= todo._id %>">
+                <h3><%= todo.title %></h3>
                 <p><%= todo.body %></p>
             </a>
         <% }); %>
