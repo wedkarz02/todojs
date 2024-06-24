@@ -8,10 +8,12 @@ const todoSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
+        maxLength: [32, "Title cannot be longer than 32 characters."],
     },
     body: {
         type: String,
         required: true,
+        maxLength: [512, "Body cannot be longer than 512 characters."],
     },
     createdAt: {
         type: Date,

@@ -20,7 +20,6 @@ passport.use(
                 displayName: profile.displayName,
                 firstName: profile.name.givenName,
                 lastName: profile.name.familyName,
-                profileImage: profile.photos[0].value,
             };
 
             try {

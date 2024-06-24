@@ -39,7 +39,7 @@ app.use(
     session({
         secret: SESSION_SECRET,
         resave: false,
-        saveUninitialized: true,
+        saveUninitialized: false,
         cookie: { maxAge: 600000 },
         store: mongoStore.create({
             mongoUrl: DB_URI,
@@ -61,7 +61,7 @@ const dashboardRouter = require(path.join(__dirname, "routes", "dashboard"));
 
 app.use("/", indexRouter);
 app.use("/", authRouter);
-app.use("/", dashboardRouter);
+app.use("/dashboard", dashboardRouter);
 
 app.use((_req, res, _next) => {
     res.status(404).render(path.join("pages", "404"));

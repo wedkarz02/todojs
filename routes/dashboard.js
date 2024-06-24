@@ -14,8 +14,8 @@ const isLoggedIn = (req, res, next) => {
     }
 };
 
-router.get("/dashboard", isLoggedIn, async (req, res) => {
-    let perPage = 12;
+router.get("/", isLoggedIn, async (req, res) => {
+    let perPage = 10;
     let page = req.query.page || 1;
 
     try {
@@ -53,7 +53,7 @@ router.get("/dashboard", isLoggedIn, async (req, res) => {
     }
 });
 
-router.get("/dashboard/item/:id", isLoggedIn, async (req, res) => {
+router.get("/item/:id", isLoggedIn, async (req, res) => {
     try {
         const todo = await Todo.findById({ _id: req.params.id })
             .where({ user: req.user.id })
@@ -77,7 +77,7 @@ router.get("/dashboard/item/:id", isLoggedIn, async (req, res) => {
     }
 });
 
-router.put("/dashboard/item/:id", isLoggedIn, async (req, res) => {
+router.put("/item/:id", isLoggedIn, async (req, res) => {
     try {
         await Todo.findOneAndUpdate(
             { _id: req.params.id },
@@ -85,16 +85,25 @@ router.put("/dashboard/item/:id", isLoggedIn, async (req, res) => {
                 title: req.body.title,
                 body: req.body.body,
                 updatedAt: Date.now(),
+            },
+            {
+                runValidators: true,
             }
         ).where({ user: req.user.id });
         res.redirect("/dashboard");
     } catch (err) {
-        console.error(err);
-        res.status(500).render(path.join("pages", "error"), { error: err });
+        if (err.name === "ValidationError") {
+            res.status(400).render(path.join("pages", "error"), {
+                error: err.message,
+            });
+        } else {
+            console.error(err);
+            res.status(500).render(path.join("pages", "error"), { error: err });
+        }
     }
 });
 
-router.delete("/dashboard/item-delete/:id", isLoggedIn, async (req, res) => {
+router.delete("/item-delete/:id", isLoggedIn, async (req, res) => {
     try {
         await Todo.deleteOne({ _id: req.params.id }).where({
             user: req.user.id,
@@ -106,28 +115,34 @@ router.delete("/dashboard/item-delete/:id", isLoggedIn, async (req, res) => {
     }
 });
 
-router.get("/dashboard/add", isLoggedIn, async (_req, res) => {
+router.get("/add", isLoggedIn, async (_req, res) => {
     res.status(200).render(path.join("pages", "dashboard", "add"));
 });
 
-router.post("/dashboard/add", isLoggedIn, async (req, res) => {
+router.post("/add", isLoggedIn, async (req, res) => {
     try {
         req.body.user = req.user.id;
         await Todo.create(req.body);
         res.redirect("/dashboard");
     } catch (err) {
-        console.error(err);
-        res.status(500).render(path.join("pages", "error"), { error: err });
+        if (err.name === "ValidationError") {
+            res.status(400).render(path.join("pages", "error"), {
+                error: err.message,
+            });
+        } else {
+            console.error(err);
+            res.status(500).render(path.join("pages", "error"), { error: err });
+        }
     }
 });
 
-router.get("/dashboard/search", isLoggedIn, async (_req, res) => {
+router.get("/search", isLoggedIn, async (_req, res) => {
     res.status(200).render(path.join("pages", "dashboard", "search"), {
         results: "",
     });
 });
 
-router.post("/dashboard/search", isLoggedIn, async (req, res) => {
+router.post("/search", isLoggedIn, async (req, res) => {
     try {
         let searchTerm = req.body.searchTerm;
         const searchNoSpecialChars = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "");
