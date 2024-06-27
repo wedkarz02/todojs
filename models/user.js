@@ -1,26 +1,17 @@
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-    googleId: {
+    username: {
         type: String,
         required: true,
+        unique: true,
+        minLength: [4, "Username must be at least 4 characters long."],
+        maxLength: [32, "Username cannot be longer than 32 characters"]
     },
-    displayName: {
+    password: {
         type: String,
-        required: true,
-    },
-    firstName: {
-        type: String,
-        required: true,
-    },
-    lastName: {
-        type: String,
-        required: false,
-    },
-    createdAt: {
-        type: Date,
-        default: Date.now,
-    },
+        required: true
+    }
 });
 
 const User = mongoose.model("User", userSchema);

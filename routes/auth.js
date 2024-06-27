@@ -1,44 +1,28 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const path = require("node:path");
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const LocalStrategy = require("passport-local").Strategy;
+const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 
 const User = require(path.join("..", "models", "user"));
 
-passport.use(
-    new GoogleStrategy(
-        {
-            clientID: process.env.GOOGLE_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: process.env.GOOGLE_CALLBACK_URL,
-        },
-        async (_accessToken, _refreshToken, profile, done) => {
-            const newUser = {
-                googleId: profile.id,
-                displayName: profile.displayName,
-                firstName: profile.name.givenName,
-                lastName: profile.name.familyName,
-            };
-
-            try {
-                let user = await User.findOne({ googleId: profile.id });
-                if (user) {
-                    done(null, user);
-                } else {
-                    user = await User.create(newUser);
-                    done(null, user);
-                }
-            } catch (err) {
-                console.error(err);
-                res.status(500).render(path.join("pages", "error"), {
-                    error: err,
-                });
-            }
+passport.use(new LocalStrategy(async (username, password, done) => {
+    try {
+        const user = await User.findOne({ username });
+        if (!user) {
+            return done(null, false, { message: "Username not found" });
         }
-    )
-);
+        if (!bcrypt.compareSync(password, user.password)) {
+            return done(null, false, { message: "Password incorrect" });
+        }
+        return done(null, user);
+    } catch (err) {
+        return done(err);
+    }
+}));
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -53,23 +37,45 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-router.get(
-    "/auth/google",
-    passport.authenticate("google", { scope: ["email", "profile"] })
-);
+router.post("/login", passport.authenticate("local", {
+    successRedirect: "/dashboard",
+    failureRedirect: "/login",
+    failureFlash: true
+}));
 
-router.get(
-    "/google/callback",
-    passport.authenticate("google", {
-        failureRedirect: "/login-failure",
-        successRedirect: "/dashboard",
-    })
-);
-
-router.get("/login-failure", (_req, res) => {
-    res.status(500).render(path.join("pages", "error"), {
-        error: "Failed to log in",
-    });
+router.post("/register", async (req, res) => {
+    try {
+        if (req.body.password.length < 8) {
+            const error = new mongoose.Error.ValidationError(null);
+            error.errors.password = new mongoose.Error.ValidatorError({ 
+                message: "Password must be at least 8 characters long.",
+                path: "password",
+                value: req.body.password
+            });
+            throw error;
+        }
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
+        await User.create({
+            username: req.body.username,
+            password: hashedPassword
+        });
+        res.redirect("/login");
+    } catch (err) {
+        if (err.name === "ValidationError") {
+            const msg = Object.values(err.errors).map(error => error.message)[0];
+            res.status(400).render(path.join("pages", "register"), { message: msg });
+        } else {
+            if (err.code === 11000) {
+                res.status(400).render(
+                    path.join("pages", "register"),
+                    { message: "Username already exists." }
+                );
+            } else {
+                console.error(err);
+                res.status(500).render(path.join("pages", "error"), { error: err });
+            }
+        }
+    }
 });
 
 router.get("/logout", (req, res) => {

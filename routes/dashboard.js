@@ -42,7 +42,7 @@ router.get("/", isLoggedIn, async (req, res) => {
         const count = await Todo.countDocuments();
 
         res.status(200).render(path.join("pages", "dashboard", "index"), {
-            userName: req.user.firstName,
+            username: req.user.username,
             todos,
             current: page,
             pages: Math.ceil(count / perPage),
@@ -56,8 +56,7 @@ router.get("/", isLoggedIn, async (req, res) => {
 router.get("/item/:id", isLoggedIn, async (req, res) => {
     try {
         const todo = await Todo.findById({ _id: req.params.id })
-            .where({ user: req.user.id })
-            .lean();
+            .where({ user: req.user.id });
 
         if (todo) {
             res.status(200).render(

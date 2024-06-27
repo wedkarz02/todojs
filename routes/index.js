@@ -11,6 +11,14 @@ router.get("/", (req, res) => {
     }
 });
 
+router.get("/login", (_req, res) => {
+    res.status(200).render(path.join("pages", "login"));
+});
+
+router.get("/register", (_req, res) => {
+    res.status(200).render(path.join("pages", "register"), { message: "" });
+});
+
 router.get("/about", (_req, res) => {
     res.status(200).render(path.join("pages", "about"));
 });
