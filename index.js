@@ -60,10 +60,12 @@ app.use((_req, res, next) => {
 const indexRouter = require(path.join(__dirname, "routes", "index"));
 const authRouter = require(path.join(__dirname, "routes", "auth"));
 const dashboardRouter = require(path.join(__dirname, "routes", "dashboard"));
+const userRouter = require(path.join(__dirname, "routes", "user"));
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/dashboard", dashboardRouter);
+app.use("/user", userRouter);
 
 app.use((_req, res, _next) => {
     res.status(404).render(path.join("pages", "404"));

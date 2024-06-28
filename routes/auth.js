@@ -7,7 +7,7 @@ const bcrypt = require("bcryptjs");
 
 const router = express.Router();
 
-const User = require(path.join("..", "models", "user"));
+const User = require(path.join("..", "models", "user")).User;
 
 passport.use(new LocalStrategy(async (username, password, done) => {
     try {

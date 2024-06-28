@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const path = require("node:path");
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -14,6 +15,18 @@ const userSchema = new mongoose.Schema({
     }
 });
 
-const User = mongoose.model("User", userSchema);
 
-module.exports = User;
+const isLoggedIn = (req, res, next) => {
+    if (req.user) {
+        next();
+    } else {
+        res.status(401).render(path.join("pages", "unauthorized"));
+    }
+}
+
+const User = mongoose.model("User", userSchema);
+module.exports = {
+    User,
+    isLoggedIn
+};
+
