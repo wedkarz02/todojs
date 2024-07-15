@@ -20,7 +20,10 @@ const isLoggedIn = (req, res, next) => {
     if (req.user) {
         next();
     } else {
-        res.status(401).render(path.join("pages", "unauthorized"));
+        if (req.is("json") || req.is("application/json")) {
+            return res.json({ message: "Access denied" });
+        }
+        return res.status(401).render(path.join("pages", "unauthorized"));
     }
 }
 

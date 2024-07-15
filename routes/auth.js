@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("node:path");
+const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcryptjs");
@@ -37,11 +38,29 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
-router.post("/login", passport.authenticate("local", {
-    successRedirect: "/dashboard",
-    failureRedirect: "/login",
-    failureFlash: true
-}));
+router.post("/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+        if (err) {
+            return next(err);
+        }
+        if (!user) {
+            if (req.is("json") || req.is("application/json")) {
+                return res.json({ message: info.message });
+            }
+            req.flash("error", info.message);
+            return res.redirect("/login");
+        }
+        req.logIn(user, (err) => {
+            if (err) {
+                next(err);
+            }
+            if (req.is("json") || req.is("application/json")) {
+                return res.json({ message: "Login successfull" });
+            }
+            return res.redirect("/dashboard");
+        });
+    })(req, res, next);
+});
 
 router.post("/register", async (req, res) => {
     try {
@@ -79,16 +98,26 @@ router.post("/register", async (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error(err);
-            res.status(500).render(path.join("pages", "error"), {
-                error: "Failed to log out",
-            });
-        } else {
-            res.redirect("/");
-        }
-    });
+    if (!req.user) {
+        return res.status(400).json({ message: "Not logged in" });
+    } else {
+        req.session.destroy((err) => {
+            if (err) {
+                console.error(err);
+                res.status(500).render(path.join("pages", "error"), {
+                    error: "Failed to log out",
+                });
+            } else {
+                if (req.is("json") || req.is("application/json")) {
+                    return res.status(200).json({
+                        message: "Logout successfull",
+                        loggedOutUser: req.user
+                    });
+                }
+                return res.redirect("/");
+            }
+        });
+    }
 });
 
 module.exports = router;

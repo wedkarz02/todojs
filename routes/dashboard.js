@@ -7,14 +7,6 @@ const router = express.Router();
 const Todo = require(path.join("..", "models", "todo"));
 const isLoggedIn = require(path.join("..", "models", "user")).isLoggedIn;
 
-// const isLoggedIn = (req, res, next) => {
-//     if (req.user) {
-//         next();
-//     } else {
-//         res.status(401).render(path.join("pages", "unauthorized"));
-//     }
-// };
-
 router.get("/", isLoggedIn, async (req, res) => {
     let perPage = 8;
     let page = req.query.page || 1;

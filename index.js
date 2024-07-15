@@ -60,15 +60,20 @@ app.use((_req, res, next) => {
 const indexRouter = require(path.join(__dirname, "routes", "index"));
 const authRouter = require(path.join(__dirname, "routes", "auth"));
 const dashboardRouter = require(path.join(__dirname, "routes", "dashboard"));
-const userRouter = require(path.join(__dirname, "routes", "user"));
+const userRouter = require(path.join(__dirname, "routes", "api", "user"));
+const itemRouter = require(path.join(__dirname, "routes", "api", "item"));
 
 app.use("/", indexRouter);
 app.use("/auth", authRouter);
 app.use("/dashboard", dashboardRouter);
-app.use("/user", userRouter);
+app.use("/api/user", userRouter);
+app.use("/api/item", itemRouter);
 
-app.use((_req, res, _next) => {
-    res.status(404).render(path.join("pages", "404"));
+app.use((req, res, _next) => {
+    if (req.is("json") || req.is("application/json")) {
+        return res.json({ message: "404 - page not found" });
+    }
+    return res.status(404).render(path.join("pages", "404"));
 });
 
 const shutdown = async (status) => {
