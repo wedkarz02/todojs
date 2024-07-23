@@ -60,3 +60,8 @@ DB_PORT=27017
 DB_HOST="127.0.0.1"
 SESSION_SECRET="secret"
 ```
+
+# License
+
+If not directly stated otherwise, everything in this project is under the MIT License. See the [LICENSE](https://github.com/wedkarz02/todojs/blob/main/LICENSE) file for more info.
+
